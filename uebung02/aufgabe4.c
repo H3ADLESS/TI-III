@@ -52,7 +52,7 @@ int main(int argc, char* *argv){
 					( absq(asciiToVignere(in[i]) - asciiToVignere(key[x]))) % 36);
 			}
 			x++;
-			if (!key[x]){
+			if (!key[x] || x > 9){
 				x = 0;
 			}
 			j++;
