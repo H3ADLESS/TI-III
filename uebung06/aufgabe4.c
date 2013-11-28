@@ -15,6 +15,17 @@
 #define PATHSIZE		256
 #define TRASHFOLDER	".ti3_trash"	
 
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+#include <sys\stat.h>
+#endif
+#ifdef linux
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
 
 char copy_buffer[BUFSIZE];
 
