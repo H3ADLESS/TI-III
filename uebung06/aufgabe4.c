@@ -15,15 +15,10 @@
 #define PATHSIZE		256
 #define TRASHFOLDER	".ti3_trash"	
 
-#ifdef _WIN32
-#include <fcntl.h>
-#include <io.h>
-#include <sys\stat.h>
-#endif
-#ifdef linux
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#ifdef __unix__
+      #include <unistd.h>
+#elif __MSDOS__ || __WIN32__ || _MSC_VER
+      #include <io.h>
 #endif
 
 
@@ -38,10 +33,29 @@ char copy_buffer[BUFSIZE];
  */
 int copy(char *source, char *target)
 {
+	int f1;
+	int f2;
+	int counter_data;
+	int const buffersize = 100;
+	char buffer[buffersize];
 
+	if((f1 = open(source,O_RDONLY)) == -1){
+		perror("nop src load\n");
+		return -1;	
+	}
 
+	if((f2 = open(target,O_WRONLY|O_EXCL|O_CREAT,S_IRWXU)) == -1){
+		perror("nop targ load\n");
+		return -2;	
+	}
 
+	while(counter_data = read(f1,buffer,buffersize)){
+		write(f2,buffer,counter_data);
+	}
 
+	close(f1);
+	close(f2);
+	return 0;
 }
 
 
