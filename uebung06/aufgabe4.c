@@ -68,26 +68,71 @@ char parse_command(char *command)
 /* erzeugt einen Ordner foldername */
 int setup_trashcan(char *foldername)
 {
-
+	int stat;
+	if((stat=mkdir(foldername,S_IRWXU)) == -1){
+		return;	
+	}
 }
 
 /* führt trashcan -p[ut] filename aus */
 int put_file(char *foldername, char *filename)
 {
-	
+	setup_trashcan(foldername);
+	char *target = (char *) malloc(250);
+ 
+	strcat(target,foldername);
+	strcat(target,"/");
+	strcat(target,filename);
+
+	copy(filename,target);
+
+	if(remove(filename) != 0)
+		perror("fuck fehler.\n");
 }
 
 
 /* führt trashcan -g[et] filename aus */
 int get_file(char *foldername, char *filename)
 {
+	struct stat st;
+	char puffer[200];
 
+   
+	char *source = (char *) malloc(250);
+	char *target = (char *) malloc(250);
+
+	strcat(source,foldername);
+	strcat(source,"/");
+	strcat(source,filename);	
+
+	if(stat(source,&st) !=0 ){
+		perror("nanana.\n");
+		return -1;
+	}
+
+	if(getcwd(puffer,sizeof(puffer)) == -1)
+		perror("lululu\n");
+	
+	strcat(target,puffer);
+	strcat(target,"/");
+	strcat(target,filename);
+
+	copy(source,target);		
+
+	if(remove(source) != 0)
+		perror("lalalalal\n");
 }
 
 /* führt trashcan -r[emove] filename aus */
 int remove_file(char *foldername, char *filename)
 {
+	char *target = (char *) malloc(250);
 
+	strcat(target, foldername);
+	strcat(target,"/");
+	strcat(target,filename);	
+
+	remove(target);	
 }
 
 
